@@ -20,15 +20,17 @@
 
 <body class="mb-10">
     <div class="flex px-10 py-4">
-        <button class="ml-auto">Logout</button>
+        <button class="ml-auto" id="logout-btn"">Logout</button>
     </div>
-    <div id="response"></div>
-    <form class="space-y-6" hx-encoding='multipart/form-data' hx-post="
-        https://bluesense-api.vercel.app/api/water-suppliers/create" hx-trigger="submit" hx-target="#response"
-        hx-ext="json-enc">
+    <div id=" initData" hx-get="https://bluesense-api.vercel.app/api/water-suppliers/profile" hx-trigger="load"
+            class="hidden">
+    </div>
+    <div id="response" class="px-10"></div>
+    <form class="space-y-6" hx-encoding='multipart/form-data'
+        hx-post="https://bluesense-api.vercel.app/api/water-suppliers/create" hx-trigger="submit" hx-target="#response">
         <div class="flex flex-row w-full">
 
-            <div class="flex-1 px-10">
+            <div class="flex-2 px-10">
                 <div class="relative">
                     <img id="image"
                         src="https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg"
@@ -38,8 +40,7 @@
                                                   file:rounded-full file:border-0
                                                   file:text-sm file:font-semibold
                                                   file:bg-violet-50 file:text-violet-700
-                                                  hover:file:bg-violet-100
-                                                " />
+                                                  hover:file:bg-violet-100" />
                 </div>
             </div>
             <div class="flex-1 px-10">
@@ -72,15 +73,16 @@
                                 placeholder="masukkan data longitude " type="number" name="longitude" />
                         </div>
                     </div>
-                    <button type="submit">Save</button>
+                    <button type="submit" class="bg-violet-700 text-white rounded-md py-2">Save</button>
                 </div>
             </div>
         </div>
     </form>
-    <form action="" class="p-10 flex flex-row">
+    <form hx-encoding='multipart/form-data' hx-post="https://bluesense-api.vercel.app/api/water-suppliers/csv"
+        hx-trigger="submit" hx-target="#response" class="p-10 flex flex-row">
         <label class="block">
             <small>Pilih file riwayat deteksi air anda (.csv)</small>
-            <input type="file" class="block w-full text-sm text-slate-500
+            <input name="csv" type="file" class="block w-full text-sm text-slate-500
                               file:mr-4 file:py-2 file:px-4
                               file:rounded-full file:border-0
                               file:text-sm file:font-semibold
@@ -123,24 +125,29 @@
 </script>
 
 <script>
+    function logout() {
+        localStorage.setItem('token', null)
+        window.location.replace('/supplier/auth')
+    }
     function onChange(input1) {
         var input2 = document.getElementById('myInput2');
         input2.value = input1.value;
     }
 
-
+    document.getElementById('logout-btn').addEventListener('click', logout)
 
     document.body.addEventListener('htmx:configRequest', function (evt) {
         console.log("config request");
+
         token = localStorage.getItem('token'); // add a new parameter into the mix
+        console.log(token)
         evt.detail.headers['Authorization'] = `bearer ${token}`;
     });
     document.body.addEventListener('htmx:afterRequest', function (evt) {
         const { xhr, successful } = evt.detail
-        console.log(xhr.responseUrl)
-        if (successful) {
-            console.log("after request", JSON.parse(xhr.response).data.token);
-            localStorage.setItem("token", JSON.parse(xhr.response).data.token)
+        console.log(xhr)
+        if (successful && xhr.responseURL != "https://bluesense-api.vercel.app/api/water-suppliers/profile"
+        ) {
             let message = document.getElementById("response");
             var errdiv = document.getElementById("response");
 
@@ -151,7 +158,28 @@
             </h4>
         </div>`;
             message_alert_on();
-            window.location.replace("/supplier/dashboard");
+        }
+        if (successful && xhr.responseURL == "https://bluesense-api.vercel.app/api/water-suppliers/profile"
+        ) {
+            const data = JSON.parse(xhr.response).data
+            console.log(data)
+            const {
+                detail_location,
+                id
+                , id_user_water_supplier,
+                latitude,
+                longitude,
+                name,
+                phone,
+                image_url
+            } = data
+
+            document.getElementById('detail_location').value = detail_location
+            document.getElementById('latitude').value = latitude
+            document.getElementById('longitude').value = longitude
+            document.getElementById('phone').value = phone
+            document.getElementById('name').value = name
+            document.getElementById('image').src = image_url
         }
     });
 
