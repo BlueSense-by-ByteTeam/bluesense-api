@@ -3,8 +3,11 @@ import { publicRouter } from "../route/public-api.js";
 import { errorMiddleware } from "../middleware/error-middleware.js";
 import cors from "cors";
 import { supplierRouter } from "../route/supplier.js";
+import nunjucks from "nunjucks";
+
 
 const app = express();
+
 app.use(express.json());
 app.set("view engine", "ejs");
 // app.set("view engine", "html");
