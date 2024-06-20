@@ -1,13 +1,13 @@
 
 
 const renderAuth = async (req, res, next) => {
-  res.render('supplier/auth');
+  res.render('supplier/auth/index.ejs');
 };
 const renderRegister = async (req, res, next) => {
-  res.render('supplier/register');
+  res.render('supplier/register/index.ejs');
 };
 const renderDashboard = async (req, res, next) => {
-  res.render('supplier/dashboard');
+  res.render('supplier/dashboard/index.ejs');
 };
 
 export default {

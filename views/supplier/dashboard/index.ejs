@@ -5,60 +5,176 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supplier | Dashboard</title>
-    <script src="https://unpkg.com/htmx.org@2.0.0"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12"
+        integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/client-side-templates.js"></script>
+    <script src="https://unpkg.com/mustache@latest"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/client-side-templates.js"></script>
 </head>
 
-<body>
-    <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white"
-        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-        alt="">
+<body class="mb-10">
+    <div class="flex px-10 py-4">
+        <button class="ml-auto">Logout</button>
+    </div>
+    <div id="response"></div>
+    <form class="space-y-6" hx-encoding='multipart/form-data' hx-post="
+        https://bluesense-api.vercel.app/api/water-suppliers/create" hx-trigger="submit" hx-target="#response"
+        hx-ext="json-enc">
+        <div class="flex flex-row w-full">
 
-    <div class="flex flex-row">
-        <div class="flex-1 p-10">
-            <div class="relative">
-
-                <img src="https://static.promediateknologi.id/crop/0x0:0x0/0x0/webp/photo/indizone/2021/08/02/d5soREV/video-klip-rick-roll-dari-rick-astley-sudah-ditonton-1-miliar-kali-di-youtube55.jpg"
-                    class="w-[720px] h-[360px] rounded-md object-cover" alt="image supplier" srcset="">
-                <button class="absolute top-0 bg-orange-100 px-[8px] rounded-md">
-                    Edit
-                </button>
+            <div class="flex-1 px-10">
+                <div class="relative">
+                    <img id="image"
+                        src="https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg"
+                        class="w-[720px] h-[360px] rounded-md object-cover bg-grey" alt="image supplier" srcset="">
+                    <input type="file" name="image" class="block w-full text-sm text-slate-500
+                                                  file:mr-4 file:py-2 file:px-4
+                                                  file:rounded-full file:border-0
+                                                  file:text-sm file:font-semibold
+                                                  file:bg-violet-50 file:text-violet-700
+                                                  hover:file:bg-violet-100
+                                                " />
+                </div>
+            </div>
+            <div class="flex-1 px-10">
+                <h5>Detail Data</h5>
+                <div class="grid gap-y-[8px]">
+                    <div class="relative w-full">
+                        <input id="name" onchange="onChange(this)"
+                            class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-2 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+                            placeholder="masukkan nama tempat" type="text" name="name" />
+                    </div>
+                    <div class="relative w-full">
+                        <input id="detail_location" onchange="onChange(this)"
+                            class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-2 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+                            placeholder="masukkan detail lokasi" type="text" name="detail_location" />
+                    </div>
+                    <div class="relative w-full">
+                        <input id="phone" onchange="onChange(this)"
+                            class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 px-2 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+                            placeholder="masukkan nomor telp" type="number" name="phone" />
+                    </div>
+                    <div class="relative w-full flex flex-row gap-4">
+                        <div class="flex-1 relative">
+                            <input id="latitude" onchange="onChange(this)"
+                                class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pr-[24.px] shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm px-2"
+                                placeholder="masukkan data latitude" type="number" name="latitude" />
+                        </div>
+                        <div class="flex-1 relative">
+                            <input id="longitude" onchange="onChange(this)"
+                                class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pr-[24px] shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm px-2"
+                                placeholder="masukkan data longitude " type="number" name="longitude" />
+                        </div>
+                    </div>
+                    <button type="submit">Save</button>
+                </div>
             </div>
         </div>
-        <div class="flex-1 p-10">
-            <h5>Detail Data</h5>
-            <div class="grid gap-y-[8px]">
-                <div class="relative w-[320px]">
-                    <input
-                        class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pr-[120px] shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm border-none"
-                        placeholder="masukkan nama tempat" type="text" name="search" />
-                    <button class="absolute top-0 right-0 bottom-0 bg-orange-100 px-[8px] rounded-md">
-                        Edit
-                    </button>
-                </div>
-                <div class="relative w-[320px]">
-
-                    <input
-                        class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pr-[120px] shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm border-none"
-                        placeholder="masukkan detail lokasi" type="text" name="search" />
-                    <button class="absolute top-0 right-0 bottom-0 bg-orange-100 px-[8px] rounded-md">
-                        Edit
-                    </button>
-                </div>
-                <label class="block">
-                    <small>Pilih file riwayat deteksi air anda (.csv)</small>
-                    <input type="file" class="block w-full text-sm text-slate-500
-                      file:mr-4 file:py-2 file:px-4
-                      file:rounded-full file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-violet-50 file:text-violet-700
-                      hover:file:bg-violet-100
-                    " />
-                </label>
-            </div>
-
-        </div>
+    </form>
+    <form action="" class="p-10 flex flex-row">
+        <label class="block">
+            <small>Pilih file riwayat deteksi air anda (.csv)</small>
+            <input type="file" class="block w-full text-sm text-slate-500
+                              file:mr-4 file:py-2 file:px-4
+                              file:rounded-full file:border-0
+                              file:text-sm file:font-semibold
+                              file:bg-violet-50 file:text-violet-700
+                              hover:file:bg-violet-100
+                            " />
+        </label>
+        <button type="submit" class="bg-violet-700  p-[8px] my-auto text-white rounded-md">Upload</button>
+    </form>
+    <div class="flex px-10 flex-col">
+        <h5>Visualisasi Riwayat Kualitas Air Anda</h5>
+        <canvas class="" id="myChart"></canvas>
     </div>
 </body>
+<script>
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: 'pH',
+                data: [12, 19, 3, 5, 2, 3],
+                borderWidth: 1
+            }, {
+                label: 'TDS',
+                data: [12, 19, 3, 5, 2, 3],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    function onChange(input1) {
+        var input2 = document.getElementById('myInput2');
+        input2.value = input1.value;
+    }
+
+
+
+    document.body.addEventListener('htmx:configRequest', function (evt) {
+        console.log("config request");
+        token = localStorage.getItem('token'); // add a new parameter into the mix
+        evt.detail.headers['Authorization'] = `bearer ${token}`;
+    });
+    document.body.addEventListener('htmx:afterRequest', function (evt) {
+        const { xhr, successful } = evt.detail
+        console.log(xhr.responseUrl)
+        if (successful) {
+            console.log("after request", JSON.parse(xhr.response).data.token);
+            localStorage.setItem("token", JSON.parse(xhr.response).data.token)
+            let message = document.getElementById("response");
+            var errdiv = document.getElementById("response");
+
+            errdiv.innerHTML = `
+        <div id="message_alert" class="container mt-3 mb-3 alert bg-green-100" role="alert">
+            <h4>Request Success: 
+                <span style="float:right;"><a onclick="message_alert_off()">Close [X]</a></span>
+            </h4>
+        </div>`;
+            message_alert_on();
+            window.location.replace("/supplier/dashboard");
+        }
+    });
+
+
+    htmx.on("htmx:responseError", function (evt) {
+        var errdiv = document.getElementById("response");
+        errdiv.innerHTML = `
+        <div id="message_alert" class="container mt-3 mb-3 alert bg-red-100" role="alert">
+            <h4>Request Error: ` + evt.detail.xhr.status + `
+                <span style="float:right;"><a onclick="message_alert_off()">Close [X]</a></span>
+            </h4>
+            <code>` + evt.detail.xhr.responseText + `</code>
+        </div>`;
+        message_alert_on();
+    });
+
+    function message_alert_on() {
+        document.getElementById("message_alert").style.display = "block";
+    }
+
+    function message_alert_off() {
+        document.getElementById("message_alert").style.display = "none";
+    }
+</script>
 
 </html>
